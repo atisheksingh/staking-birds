@@ -229,6 +229,7 @@ const Header = () => {
     Balance: null,
   });
   const accountChangeHandler = (account) => {
+    localStorage.setItem("account", account)
     setdata({
       address: account,
     });
@@ -252,7 +253,7 @@ const Header = () => {
   };
 
   /// wallet connect
-  const  connectwallet = () => {
+  const connectwallet = () => {
     if (window.ethereum) {
       window.ethereum
         .request({ method: "eth_requestAccounts" })
@@ -261,6 +262,7 @@ const Header = () => {
       alert("install metamask extension!!");
     }
   }
+
   if (typeof window.ethereum !== 'undefined') {
     const web3 = new Web3(window.ethereum);
   
@@ -278,13 +280,17 @@ const Header = () => {
     console.error('Metamask not found. Please install it to use this application.');
   }
 
+  const walletAddressConvertShort = (address) => address.slice(0, 5) + '....' + address.slice(-4);
+
   return (
     <>
       <div className={classes.header}>
         <div className={classes.logo}></div>
         <div className={classes.toolbar}>
           <div className={classes.Btndiv}>
-            <button className={classes.walletbtn} onClick={connectwallet()} >Connect Wallet</button>
+            <button className={classes.walletbtn} onClick={connectwallet()} >
+              { localStorage.getItem("account") ? <>{walletAddressConvertShort(localStorage.getItem("account"))} </> : "Connect Wallet" }
+            </button>
           </div> 
         </div>
         <div className={classes.hdMenu}>
