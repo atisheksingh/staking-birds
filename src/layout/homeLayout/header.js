@@ -224,63 +224,64 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const classes = useStyles();
-  const [data, setdata] = useState({
-    address: "",
-    Balance: null,
-  });
-  const accountChangeHandler = (account) => {
-    localStorage.setItem("account", account)
-    setdata({
-      address: account,
-    });
-    getbalance(account);
-    //alert("user address is ",account);
-  };
+  const [walletAddress, setWalletAddress] = useState("");
 
-  const getbalance = (address) => {
-    // Requesting balance method
-    window.ethereum
-      .request({ 
-        method: "eth_getBalance", 
-        params: [address, "latest"] 
-      })
-      .then((balance) => {
-        // Setting balance
-        setdata({
-          Balance: "1000"//ethers.utils.formatEther(balance),
+  useEffect(() => {
+    getCurrentWalletConnected();
+    addWalletListener();
+  }, [walletAddress]);
+
+  const connectWallet = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        /* MetaMask is installed */
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
         });
-      });
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
+    }
   };
 
-  /// wallet connect
-  const connectwallet = () => {
-    if (window.ethereum) {
-      window.ethereum
-        .request({ method: "eth_requestAccounts" })
-        .then((res) => accountChangeHandler(res[0]));
+  const getCurrentWalletConnected = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+          console.log(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
     } else {
-      alert("install metamask extension!!");
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
     }
-  }
+  };
 
-  if (typeof window.ethereum !== 'undefined') {
-    const web3 = new Web3(window.ethereum);
-  
-    // Request access to the user's Ethereum accounts
-    window.ethereum
-      .enable()
-      .then((accounts) => {
-        // You now have access to the user's Ethereum accounts via the `accounts` array.
-        console.log('Connected to Metamask with account:', accounts[0]);
-      })
-      .catch((error) => {
-        console.error('Error connecting to Metamask:', error);
+  const addWalletListener = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
       });
-  } else {
-    console.error('Metamask not found. Please install it to use this application.');
-  }
-
-  const walletAddressConvertShort = (address) => address.slice(0, 5) + '....' + address.slice(-4);
+    } else {
+      /* MetaMask is not installed */
+      setWalletAddress("");
+      console.log("Please install MetaMask");
+    }
+  };
 
   return (
     <>
@@ -288,10 +289,15 @@ const Header = () => {
         <div className={classes.logo}></div>
         <div className={classes.toolbar}>
           <div className={classes.Btndiv}>
-            <button className={classes.walletbtn} onClick={connectwallet()} >
-              { localStorage.getItem("account") ? <>{walletAddressConvertShort(localStorage.getItem("account"))} </> : "Connect Wallet" }
+            <button className={classes.walletbtn} onClick={connectWallet} >
+              {walletAddress && walletAddress.length > 0
+                ? `${walletAddress.substring(
+                  0,
+                  6
+                )}...${walletAddress.substring(38)}`
+                : "Connect Wallet"}
             </button>
-          </div> 
+          </div>
         </div>
         <div className={classes.hdMenu}>
           <li>
