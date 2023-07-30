@@ -21,12 +21,9 @@ exports.stakeToken = (amount, accountAddress, days) => {
     }
 
     const weiAmount = web3.utils.toWei(amount, 'ether');
-
-    console.log("weiAmount: ", weiAmount)
-
     myContract.methods.lockStakingTokenToParticipate(weiAmount).send({
-        from: "0x8965142e63ea2043273d62fd32cd43974f67ff18", // accountAddress.toString(),
-        // gas: 200000, // Adjust the gas limit as needed
+        from: accountAddress.toString(),
+        gas: 200000, // Adjust the gas limit as needed
     }).on('transactionHash', (hash) => {
         console.log('Transaction hash:', hash);
         window.alert("Successful transaction hash:", hash);

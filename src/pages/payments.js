@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+import { tranferToken } from "../service/buyToken"
 import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,6 +70,10 @@ const Payments = () => {
 
   const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
 
+  const buyTokens = async () => {
+    await tranferToken(usdc, myStateWalletAddress)
+  }
+
   return (
     <>
       <div className={classes.dynamicheader}>
@@ -118,7 +123,7 @@ const Payments = () => {
           </div>
           {
             myStateWalletAddress ? 
-            <> <button type="button" className={classes.btn}>Buy Now</button> </>
+            <> <button type="button" className={classes.btn} onClick={() => buyTokens()}>Buy Now</button> </>
             :
             <> <button type="button" className={classes.btn} onClick={() => { document.getElementById("connectWalletBtn").click() }}>Connect Wallet</button> </>
           }
