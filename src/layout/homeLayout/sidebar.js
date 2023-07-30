@@ -1,6 +1,9 @@
 import React,{useState} from "react";
 import { makeStyles } from "@material-ui/core";
 
+import { useSelector, useDispatch } from "react-redux";
+import contractServies from "../../service/contarctIntegartion"
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -132,11 +135,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Sidebar = () => {
   const classes = useStyles();
+  const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
+  const [amount, setAmount] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
+
+  const stackFun = async () => { 
+    console.log("Fun Call")
+    if(selectedOption == 1){
+      await contractServies.stakeToken(amount, myStateWalletAddress, 21) 
+    }else if(selectedOption == 2){
+      await contractServies.stakeToken(amount, myStateWalletAddress, 60) 
+    }else if(selectedOption == 3){
+      await contractServies.stakeToken(amount, myStateWalletAddress, 90) 
+    }else if(selectedOption == 4){
+      await contractServies.stakeToken(amount, myStateWalletAddress, 180) 
+    }
+  }
 
   // const handleSubmit = () => {
   //   // Handle form submission
@@ -156,6 +174,7 @@ const Sidebar = () => {
               <input
                 type="text"
                 className={classes.input}
+                onChange={(e) => setAmount(e.target.value)}
                 onkeypress="return noenter()"
               />
             </div>
@@ -170,7 +189,7 @@ const Sidebar = () => {
                 checked={selectedOption === 1}
                 onChange={() => handleOptionChange(1)}
               />
-              <label htmlFor="option1" className={classes.labelFont}>30 Days</label>
+              <label htmlFor="option1" className={classes.labelFont}>21 Days</label>
             </div>
             <div className={classes.radioContainer}>
               <input
@@ -181,7 +200,7 @@ const Sidebar = () => {
                 checked={selectedOption === 2}
                 onChange={() => handleOptionChange(2)}
               />
-              <label htmlFor="option2" className={classes.labelFont}>45 Days</label>
+              <label htmlFor="option2" className={classes.labelFont}>60 Days</label>
             </div>
             <div className={classes.radioContainer}>
               <input
@@ -192,7 +211,7 @@ const Sidebar = () => {
                 checked={selectedOption === 3}
                 onChange={() => handleOptionChange(3)}
               />
-              <label htmlFor="option3" className={classes.labelFont}>60 Days</label>
+              <label htmlFor="option3" className={classes.labelFont}>90 Days</label>
             </div>
             <div className={classes.radioContainer}>
               <input
@@ -203,10 +222,10 @@ const Sidebar = () => {
                 checked={selectedOption === 4}
                 onChange={() => handleOptionChange(4)}
               />
-              <label htmlFor="option4" className={classes.labelFont}>90 Days</label>
+              <label htmlFor="option4" className={classes.labelFont}>180 Days</label>
             </div>
             </div>
-            <button className={classes.btn}>Stake</button>
+            <button className={classes.btn} onClick={() => { stackFun() }}>Stake</button>
           </div>
         </div>
       </div>

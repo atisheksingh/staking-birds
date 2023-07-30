@@ -1,8 +1,14 @@
 import React from "react";
 import AppRoutes from "./routes";
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
-  return <AppRoutes />;
+  return (
+    <>
+      <Toaster />
+      <AppRoutes />
+    </>
+  )
 };
 
 export default App;
