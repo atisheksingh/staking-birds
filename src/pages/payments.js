@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+import { useSelector, useDispatch } from "react-redux";
+
 const useStyles = makeStyles((theme) => ({
   dynamicheader: {
     marginLeft: "150px",
@@ -65,6 +67,8 @@ const Payments = () => {
   const [usdc, setUsdc] = useState(0);
   const [swl, setSwl] = useState(0);
 
+  const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
+
   return (
     <>
       <div className={classes.dynamicheader}>
@@ -112,7 +116,12 @@ const Payments = () => {
               }}
             />
           </div>
-          <button type="button" className={classes.btn}>Buy Now</button>
+          {
+            myStateWalletAddress ? 
+            <> <button type="button" className={classes.btn}>Buy Now</button> </>
+            :
+            <> <button type="button" className={classes.btn} onClick={() => { document.getElementById("connectWalletBtn").click() }}>Connect Wallet</button> </>
+          }
         </div>
       </div>
     </>

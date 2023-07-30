@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
-import { ethers } from "ethers";
-import Web3 from 'web3';
+
+import { useSelector, useDispatch } from "react-redux";
+import { setWalletAddrees } from "../../actions/index";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -226,10 +227,13 @@ const Header = () => {
   const classes = useStyles();
   const [walletAddress, setWalletAddress] = useState("");
 
+  const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     getCurrentWalletConnected();
     addWalletListener();
-  }, [walletAddress]);
+  }, [myStateWalletAddress]);
 
   const connectWallet = async () => {
     if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
@@ -238,13 +242,14 @@ const Header = () => {
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
-        setWalletAddress(accounts[0]);
-        console.log(accounts[0]);
+        dispatch(setWalletAddrees(accounts[0].toString()));
       } catch (err) {
+        dispatch(setWalletAddrees(""));
         console.error(err.message);
       }
     } else {
       /* MetaMask is not installed */
+      dispatch(setWalletAddrees(""));
       console.log("Please install MetaMask");
     }
   };
@@ -256,16 +261,18 @@ const Header = () => {
           method: "eth_accounts",
         });
         if (accounts.length > 0) {
-          setWalletAddress(accounts[0]);
-          console.log(accounts[0]);
+          dispatch(setWalletAddrees(accounts[0].toString()));
         } else {
+          dispatch(setWalletAddrees(""));
           console.log("Connect to MetaMask using the Connect button");
         }
       } catch (err) {
+        dispatch(setWalletAddrees(""));
         console.error(err.message);
       }
     } else {
       /* MetaMask is not installed */
+      dispatch(setWalletAddrees(""));
       console.log("Please install MetaMask");
     }
   };
@@ -273,12 +280,11 @@ const Header = () => {
   const addWalletListener = async () => {
     if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
       window.ethereum.on("accountsChanged", (accounts) => {
-        setWalletAddress(accounts[0]);
-        console.log(accounts[0]);
+        dispatch(setWalletAddrees(accounts[0]));
       });
     } else {
       /* MetaMask is not installed */
-      setWalletAddress("");
+      dispatch(setWalletAddrees(""));
       console.log("Please install MetaMask");
     }
   };
@@ -289,12 +295,12 @@ const Header = () => {
         <div className={classes.logo}></div>
         <div className={classes.toolbar}>
           <div className={classes.Btndiv}>
-            <button className={classes.walletbtn} onClick={connectWallet} >
-              {walletAddress && walletAddress.length > 0
-                ? `${walletAddress.substring(
+            <button id='connectWalletBtn' className={classes.walletbtn} onClick={connectWallet} >
+              {myStateWalletAddress && myStateWalletAddress.length > 0
+                ? `${myStateWalletAddress.substring(
                   0,
                   6
-                )}...${walletAddress.substring(38)}`
+                )}...${myStateWalletAddress.substring(38)}`
                 : "Connect Wallet"}
             </button>
           </div>
