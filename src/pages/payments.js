@@ -42,8 +42,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "0"
   },
   icon: {
-    color: "#fff",
     fontSize: "3rem",
+    color: 'transparent',
+    background: '-webkit-linear-gradient(#975e30, #6e4320)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
   },
   btn:{
     padding: "10px 40px",

@@ -24,9 +24,13 @@ const Help = () => {
   const classes = useStyles();
   return (
     <>
-    <div className={classes.dynamicheader}>
-                <div className={classes.dynamicTitle}>Help service</div>
-                </div>
+      <div className={classes.dynamicheader}>
+        <div className={classes.dynamicTitle}>Help service</div>
+      </div>
+      <div style={{ textAlign: "center", marginTop: "10px" }}>
+        To apply for the technical support sign in, please!<br></br>
+        Email: support@coin-birds.com
+      </div>
     </>
   );
 };
