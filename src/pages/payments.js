@@ -1,39 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
 const useStyles = makeStyles((theme) => ({
-  table: {
-    display: "table",
-    width: "100%",
-    borderLeft: "1px solid #eee",
-    borderRight: "1px solid #eee",
-  },
-  rowFirst: {
-    fontWeight: "600",
-    color: "#f8f7f1",
-    display: "table-row",
-    background: "#3b80aa",
-    boxShadow:
-      "0 1px 0 0 rgba(244, 249, 252, 0.392), inset 0 1px 4px 0 rgba(174, 107, 12, 0.314)",
-    height: "40px",
-    fontSize: "15px",
-    fontFamily: "BukvarnayaMedium",
-    color: "#ffffff",
-    textShadow: "0.5px 0.866px 0 rgba(254, 253, 253, 0.231)",
-    boxShadow:
-      "0 1px 0 0 rgba(190, 195, 197, 0.392), inset 0 1px 4px 0 rgba(130, 107, 76, 0.7)",
-    zIndex: "1",
-    borderLeft: "1px solid #eee",
-    borderRight: "1px solid #eee",
-  },
-  cell: {
-    display: "table-cell",
-    width: "100px",
-    textAlign: "center",
-    padding: "10px 0",
-    verticalAlign: "middle",
-    borderBottom: "1px solid #eee",
-  },
   dynamicheader: {
     marginLeft: "150px",
   },
@@ -51,43 +22,96 @@ const useStyles = makeStyles((theme) => ({
     height: "43px",
     lineHeight: "29px",
   },
+  card: {
+    background: "#aed145",
+    width: "60%",
+    margin: "0 auto",
+    padding: "20px",
+    textAlign: "center",
+    borderRadius: "17px",
+    marginTop: "20px",
+  },
+  input: {
+    background: "#fff",
+    borderRadius: "7px"
+  },
+  heading: {
+    color: "#fff",
+    textTransform: "capitalize",
+    textAlign: "center",
+    marginTop: "0"
+  },
+  icon: {
+    color: "#fff",
+    fontSize: "3rem",
+  },
+  btn:{
+    padding: "10px 40px",
+    background: "url(/images/tree-loop.jpg)",
+    outline: "none",
+    border: "unset",
+    color: "#fff",
+    fontWeight: "bold",
+    borderRadius: "15px",
+    marginTop: "50px",
+    cursor: "pointer"
+  }
 }));
-const rowdata = [
-  {
-    user: "Sr.",
-  },
-  {
-    user: "User",
-  },
-  {
-    user: "Sum",
-  },
-  {
-    user: "PS",
-  },
-  {
-    user: "Purse",
-  },
-  {
-    user: "Date",
-  },
-];
 const Payments = () => {
   const classes = useStyles();
+  const [usdc, setUsdc] = useState(0);
+  const [swl, setSwl] = useState(0);
+
   return (
     <>
-    <div className={classes.dynamicheader}>
-                <div className={classes.dynamicTitle}>Payments</div>
-                </div>
-    <div className={classes.table}>
-      <div className={classes.tableHead}>
-        <div className={classes.rowFirst}>
-          {rowdata.map((e) => {
-            return <div className={classes.cell}>{e.user}</div>;
-          })}
+      <div className={classes.dynamicheader}>
+        <div className={classes.dynamicTitle}>Payments</div>
+      </div>
+      <div>
+        <div className={classes.card}>
+          <h2 className={classes.heading}>buy swiftlet</h2>
+          <div>
+            <TextField
+              type="number"
+              size="small"
+              variant="outlined"
+              fullWidth
+              className={classes.input}
+              onChange={(e) => { setUsdc(e.target.value); setSwl(e.target.value); }}
+              value={usdc}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    USDC
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+          <div className={classes.icon}>
+            <i class="fa fa-arrow-down" aria-hidden="true"></i>
+          </div>
+          <div>
+            <TextField
+              type="number"
+              size="small"
+              variant="outlined"
+              fullWidth
+              className={classes.input}
+              onChange={(e) => { setUsdc(e.target.value); setSwl(e.target.value); }}
+              value={swl}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    &nbsp;&nbsp;SWL
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+          <button type="button" className={classes.btn}>Buy Now</button>
         </div>
       </div>
-    </div>
     </>
   );
 };
