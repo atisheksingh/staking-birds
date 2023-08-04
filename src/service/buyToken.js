@@ -1,4 +1,5 @@
 const { Web3 } = require('web3');
+const bigInt = require("big-integer");
 const web3 = new Web3(window.ethereum);
 const web31 = new Web3("https://bsc-testnet.publicnode.com");
 
@@ -10,6 +11,7 @@ var ercUSDCContract = new web3.eth.Contract(ercUSDC.abi, ercUSDC.contractAddress
 
 var ownerWallet = "0xABcB8563F057432FDDD9299a4ebdE9bb3cd9b257";
 var ownerPrivateKey = "95713e5891bc30bca3b2174ce662e50c52167f3b5cb231df93e433e116a10284";
+const decimals = 18;
 
 exports.tranferToken = (amount, accountAddress, customNonce) => {
 
@@ -21,19 +23,32 @@ exports.tranferToken = (amount, accountAddress, customNonce) => {
     }).on('transactionHash', async (hash) => {
         console.log('Transaction hash:', hash);
 
-        const nonce = customNonce !== undefined ? customNonce : await web3.eth.getTransactionCount(ownerWallet);
+        // const senderBalance = await ercSWLContract.methods.balanceOf(ownerWallet).call();
+        const amountToSend = bigInt(amount) * (bigInt(10) ** bigInt(decimals));
+        // const amountToSend = bigInt(amount).multiply(bigInt(10).pow(decimals)).toString();
+        // if (BigInt(senderBalance) < amountToSend) {
+        //     console.log("Insufficent Balance");
+        //     return;
+        // }
+
+        console.log("amountToSend: ", amountToSend, weiAmount);
+        const data = ercSWLContract.methods.transfer(accountAddress.toString(), bigInt(weiAmount)).encodeABI();
+        const gas = await web3.eth.estimateGas({ to: ownerWallet, data: data, from: accountAddress });
+        const maxFeePerGas = "20000000000000"
+        const maxPriorityFeePerGas = "10000000000000";
+        const nonce = await web3.eth.getTransactionCount(accountAddress);
+
+        // const nonce = customNonce !== undefined ? customNonce : await web3.eth.getTransactionCount(ownerWallet);
         console.log('Nonce:', nonce);
 
         // Build the transaction object
         const txObject = {
-            from: ownerWallet,
             to: ercSWL.contractAddress,
-            gasPrice: web3.eth.gasPrice,
-            maxPriorityFeePerGas: "250000000000",
-            maxFeePerGas: "250000000000",
-            gas: '500000',
-            data: ercSWLContract.methods.transfer(accountAddress.toString(), weiAmount).encodeABI(),
-            nonce: web3.utils.toHex(nonce),
+            maxFeePerGas: maxFeePerGas,
+            maxPriorityFeePerGas: maxPriorityFeePerGas,
+            nonce: nonce,
+            gas: gas,
+            data: data,
         };
 
         // Sign the transaction with the private key
