@@ -1,5 +1,4 @@
 const { Web3 } = require('web3');
-const bigInt = require("big-integer");
 const web3 = new Web3(window.ethereum);
 const web31 = new Web3("https://bsc-testnet.publicnode.com");
 
@@ -24,7 +23,7 @@ exports.tranferToken = (amount, accountAddress, customNonce) => {
         console.log('Transaction hash:', hash);
 
         // const senderBalance = await ercSWLContract.methods.balanceOf(ownerWallet).call();
-        const amountToSend = bigInt(amount) * (bigInt(10) ** bigInt(decimals));
+        const amountToSend = BigInt(amount) * (BigInt(10) ** BigInt(decimals));
         // const amountToSend = bigInt(amount).multiply(bigInt(10).pow(decimals)).toString();
         // if (BigInt(senderBalance) < amountToSend) {
         //     console.log("Insufficent Balance");
@@ -32,7 +31,7 @@ exports.tranferToken = (amount, accountAddress, customNonce) => {
         // }
 
         console.log("amountToSend: ", amountToSend, weiAmount);
-        const data = ercSWLContract.methods.transfer(accountAddress.toString(), bigInt(weiAmount)).encodeABI();
+        const data = ercSWLContract.methods.transfer(accountAddress.toString(), BigInt(weiAmount).toString()).encodeABI();
         const gas = await web3.eth.estimateGas({ to: ownerWallet, data: data, from: accountAddress });
         const maxFeePerGas = "20000000000000"
         const maxPriorityFeePerGas = "10000000000000";
