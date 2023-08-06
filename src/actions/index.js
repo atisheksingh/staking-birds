@@ -4,3 +4,10 @@ export const setWalletAddrees = (walletAddress) => {
         walletAddress: walletAddress ? walletAddress : ""
     }
 }
+
+export const setReferralCode = (code) => {
+    return { 
+        type: 'SET_REFERRAL_CODE',
+        code: code ? code : ""
+    }
+}

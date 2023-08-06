@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setWalletAddrees } from "../../actions/index";
+import { setWalletAddrees, setReferralCode } from "../../actions/index";
+
+import { collection, addDoc, serverTimestamp, getDocs} from 'firebase/firestore';
+import { db } from '../../service/firebase.config';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -225,7 +228,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const classes = useStyles();
-  const [walletAddress, setWalletAddress] = useState("");
 
   const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
   const dispatch = useDispatch();
@@ -233,7 +235,42 @@ const Header = () => {
   useEffect(() => {
     getCurrentWalletConnected();
     addWalletListener();
+    checkUserInDB();
   }, [myStateWalletAddress]);
+
+  function generateReferralCode(length = 6) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let referralCode = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      referralCode += characters.charAt(randomIndex);
+    }
+    return referralCode;
+  }
+
+  const checkUserInDB = async () => {
+    if(myStateWalletAddress){
+      const collectionRef = collection(db, 'users');
+
+      await getDocs(collectionRef).then(async (data) => {
+        const result = data.docs.map((doc) => ({ ...doc.data() }));
+        const isPresent = result.find(doc => doc.walletAddress === myStateWalletAddress)
+        if(!isPresent){
+          await addDoc(collectionRef, {
+            walletAddress: myStateWalletAddress.toString(),
+            referralCode: generateReferralCode(),
+            redeemCount: 0,
+            redeemUser: "",
+            timestamp: serverTimestamp()
+          });
+        }else{
+          dispatch(setReferralCode(isPresent.referralCode?.toString()))
+        }
+      })
+    }else{
+      dispatch(setReferralCode(""))
+    }
+  }
 
   const connectWallet = async () => {
     if (typeof window != "undefined" && typeof window.ethereum != "undefined") {

@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 const App = () => {
   return (
     <>
-      <Toaster />
+      <Toaster position="bottom-right" />
       <AppRoutes />
     </>
   )

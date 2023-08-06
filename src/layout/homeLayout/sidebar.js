@@ -1,8 +1,9 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 
 import { useSelector, useDispatch } from "react-redux";
-import contractServies from "../../service/contarctIntegartion"
+import contractServies from "../../service/contarctIntegartion";
+import toast from 'react-hot-toast';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,43 +100,55 @@ const useStyles = makeStyles((theme) => ({
     height: "24px",
     margin: "3px 0 0",
   },
-  btn:{
-        height: '27px !important',
-        width: '191px !important',
-        fontSize: '14px !important',
-        margin: '16px 0 0 -3px !important',
-        textTransform: 'none !important',
-        lineHeight: '18px',
-        outline: 'none',
-        border: 'none',
-        background: '#9ec339',
-        padding: '4.5px 32px',
-        textShadow: '1px 1px 1px #51613ad1, 1px 0 3px #5b8045',
-        minWidth: '140px',
-        fontFamily: 'tahoma',
-        fontWeight: 700,
-        borderRadius: '5px',
-        position: 'relative',
-        color: '#fff !important',
-        cursor:"pointer"
+  btn: {
+    height: '27px !important',
+    width: '191px !important',
+    fontSize: '14px !important',
+    margin: '16px 0 0 -3px !important',
+    textTransform: 'none !important',
+    lineHeight: '18px',
+    outline: 'none',
+    border: 'none',
+    background: '#9ec339',
+    padding: '4.5px 32px',
+    textShadow: '1px 1px 1px #51613ad1, 1px 0 3px #5b8045',
+    minWidth: '140px',
+    fontFamily: 'tahoma',
+    fontWeight: 700,
+    borderRadius: '5px',
+    position: 'relative',
+    color: '#fff !important',
+    cursor: "pointer"
   },
   radioContainer: {
     display: "flex",
-    flexDirection:"column",
+    flexDirection: "column",
     alignItems: "center",
     marginBottom: "10px",
   },
   radioInput: {
     marginRight: "8px",
   },
-  labelFont:{
-    fontSize:"15px"
+  labelFont: {
+    fontSize: "15px"
+  },
+  para: {
+    fontSize: "12px",
+    lineHeight: "15px"
+  },
+  code: {
+    width: '60%',
+    margin: '5px auto',
+    background: 'rgba(0, 0, 0, 0.05)',
+    padding: '7px',
+    borderRadius: '8px',
   }
 }));
 
 const Sidebar = () => {
   const classes = useStyles();
   const myStateWalletAddress = useSelector((state) => state.changeWalletAddrees);
+  const myStateReferralCode = useSelector((state) => state.changeReferralCode);
   const [amount, setAmount] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -143,17 +156,29 @@ const Sidebar = () => {
     setSelectedOption(option);
   };
 
-  const stackFun = async () => { 
+  const stackFun = async () => {
     console.log("Fun Call")
-    if(selectedOption == 1){
-      await contractServies.stakeToken(amount, myStateWalletAddress, 21) 
-    }else if(selectedOption == 2){
-      await contractServies.stakeToken(amount, myStateWalletAddress, 60) 
-    }else if(selectedOption == 3){
-      await contractServies.stakeToken(amount, myStateWalletAddress, 90) 
-    }else if(selectedOption == 4){
-      await contractServies.stakeToken(amount, myStateWalletAddress, 180) 
+    if (selectedOption == 1) {
+      await contractServies.stakeToken(amount, myStateWalletAddress, 21)
+    } else if (selectedOption == 2) {
+      await contractServies.stakeToken(amount, myStateWalletAddress, 60)
+    } else if (selectedOption == 3) {
+      await contractServies.stakeToken(amount, myStateWalletAddress, 90)
+    } else if (selectedOption == 4) {
+      await contractServies.stakeToken(amount, myStateWalletAddress, 180)
     }
+  }
+
+  // Function to copy text to clipboard
+  function copyToClipboard() {
+    navigator.clipboard.writeText(myStateReferralCode)
+      .then(() => {
+        toast.success('Copied Referral Code ' + myStateReferralCode)
+        console.log('Text copied to clipboard:', myStateReferralCode);
+      })
+      .catch((error) => {
+        console.error('Failed to copy text:', error);
+      });
   }
 
   // const handleSubmit = () => {
@@ -178,55 +203,73 @@ const Sidebar = () => {
                 onkeypress="return noenter()"
               />
             </div>
-            <div style={{display:"flex",justifyContent: "center",
-            gap: "10px", marginTop:"14px"}}>
-            <div className={classes.radioContainer}>
-              <input
-                type="radio"
-                className={classes.radioInput}
-                id="option1"
-                name="options"
-                checked={selectedOption === 1}
-                onChange={() => handleOptionChange(1)}
-              />
-              <label htmlFor="option1" className={classes.labelFont}>21 Days</label>
+            <div style={{
+              display: "flex", justifyContent: "center",
+              gap: "10px", marginTop: "14px"
+            }}>
+              <div className={classes.radioContainer}>
+                <input
+                  type="radio"
+                  className={classes.radioInput}
+                  id="option1"
+                  name="options"
+                  checked={selectedOption === 1}
+                  onChange={() => handleOptionChange(1)}
+                />
+                <label htmlFor="option1" className={classes.labelFont}>21 Days</label>
+              </div>
+              <div className={classes.radioContainer}>
+                <input
+                  type="radio"
+                  className={classes.radioInput}
+                  id="option2"
+                  name="options"
+                  checked={selectedOption === 2}
+                  onChange={() => handleOptionChange(2)}
+                />
+                <label htmlFor="option2" className={classes.labelFont}>60 Days</label>
+              </div>
+              <div className={classes.radioContainer}>
+                <input
+                  type="radio"
+                  className={classes.radioInput}
+                  id="option3"
+                  name="options"
+                  checked={selectedOption === 3}
+                  onChange={() => handleOptionChange(3)}
+                />
+                <label htmlFor="option3" className={classes.labelFont}>90 Days</label>
+              </div>
+              <div className={classes.radioContainer}>
+                <input
+                  type="radio"
+                  className={classes.radioInput}
+                  id="option4"
+                  name="options"
+                  checked={selectedOption === 4}
+                  onChange={() => handleOptionChange(4)}
+                />
+                <label htmlFor="option4" className={classes.labelFont}>180 Days</label>
+              </div>
             </div>
-            <div className={classes.radioContainer}>
-              <input
-                type="radio"
-                className={classes.radioInput}
-                id="option2"
-                name="options"
-                checked={selectedOption === 2}
-                onChange={() => handleOptionChange(2)}
-              />
-              <label htmlFor="option2" className={classes.labelFont}>60 Days</label>
-            </div>
-            <div className={classes.radioContainer}>
-              <input
-                type="radio"
-                className={classes.radioInput}
-                id="option3"
-                name="options"
-                checked={selectedOption === 3}
-                onChange={() => handleOptionChange(3)}
-              />
-              <label htmlFor="option3" className={classes.labelFont}>90 Days</label>
-            </div>
-            <div className={classes.radioContainer}>
-              <input
-                type="radio"
-                className={classes.radioInput}
-                id="option4"
-                name="options"
-                checked={selectedOption === 4}
-                onChange={() => handleOptionChange(4)}
-              />
-              <label htmlFor="option4" className={classes.labelFont}>180 Days</label>
-            </div>
-            </div>
-            <button className={classes.btn} onClick={() => { stackFun() }}>Stake</button>
+            {
+              myStateWalletAddress ? 
+              <> <button className={classes.btn} onClick={() => { stackFun() }}>Stake</button> </>
+              :
+              <> <button type="button" className={classes.btn} onClick={() => { document.getElementById("connectWalletBtn").click() }}>Connect Wallet</button> </>
+            }
           </div>
+          {
+            myStateReferralCode && <>
+              <div className={classes.inputdiv}>
+                <div className={classes.divTitle}>Referral Code</div>
+                <h4 style={{ margin: "0" }}>Invite your friends</h4>
+                <p className={classes.para}>Just share this code with your friends and ask them to connect this platfrom then you will get 10% of token when token transfer.</p>
+                <div className={classes.code}>{myStateReferralCode}</div>
+                <button className={classes.btn} onClick={() => { copyToClipboard() }}>Copy Code</button>
+              </div>
+            </>
+          }
         </div>
       </div>
     </>
