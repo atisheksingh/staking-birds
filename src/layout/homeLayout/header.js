@@ -6,6 +6,7 @@ import { setWalletAddrees, setReferralCode } from "../../actions/index";
 
 import { collection, addDoc, serverTimestamp, getDocs} from 'firebase/firestore';
 import { db } from '../../service/firebase.config';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -345,28 +346,28 @@ const Header = () => {
         <div className={classes.hdMenu}>
           <li>
             <div className={classes.Hbird}></div>
-            <a href="/">Main</a>
+            <Link to="/">Main</Link>
           </li>
           <li>
             <div className={`${classes.Hbird} ${classes.Hbird2}`}></div>
-            <a href="/payments">Payments</a>
+            <Link to="/payments">Payments</Link>
             <div className={classes.new}></div>
           </li>
           <li>
             <div className={`${classes.Hbird} ${classes.Hbird3}`}></div>
-            <a href="/rules">Rules</a>
+            <Link to="/rules">Rules</Link>
           </li>
           <li>
             <div className={`${classes.Hbird} ${classes.Hbird4}`}></div>
-            <a href="/about">About</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
             <div className={`${classes.Hbird} ${classes.Hbird5}`}></div>
-            <a href="/calculate">Calculate</a>
+            <Link to="/calculate">Calculate</Link>
           </li>
           <li>
             <div className={`${classes.Hbird} ${classes.Hbird6}`}></div>
-            <a href="/support">Support</a>
+            <Link to="/support">Support</Link>
           </li>
         </div>
       </div>

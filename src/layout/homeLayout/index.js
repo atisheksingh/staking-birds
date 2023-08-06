@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 import Header from "./header";
 import Sidebar from "./sidebar";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useMatch } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   wrapLoop: {
@@ -83,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
+  const match = useMatch("/")
   const [show, setShow] = useState(location.pathname === "/");
 
   const classes = useStyles();
@@ -97,7 +98,7 @@ const MainLayout = ({ children }) => {
 
             <div className={classes.wrapper}>
               <div className={classes.silvrbk}>
-                {show && (
+                {match && (
                   <div className={classes.ribbon}>Welcome to Coin Birds!</div>
                 )}
                 <Outlet>{children}</Outlet>
